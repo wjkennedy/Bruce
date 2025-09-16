@@ -156,6 +156,84 @@ async function requestPost (url, data) {
   });
 }
 
+const OnAirSign = {
+  container: null,
+  statusChip: null,
+  buttons: [],
+  currentState: 'off',
+  loading: false,
+  labels: {
+    off: 'Off Air',
+    standby: 'Standby',
+    live: 'On Air'
+  },
+  init: function () {
+    this.container = document.querySelector('.on-air-card');
+    if (!this.container) return;
+
+    this.statusChip = this.container.querySelector('[data-onair-state-label]');
+    this.buttons = Array.from(this.container.querySelectorAll('[data-onair-set]'));
+
+    this.buttons.forEach((button) => {
+      button.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (this.loading) return;
+        const state = button.getAttribute('data-onair-set');
+        if (!state || state === this.currentState) return;
+        await this.setState(state);
+      });
+    });
+
+    this.refresh();
+  },
+  setLoading: function (flag) {
+    this.loading = flag;
+    if (!this.container) return;
+    this.container.classList.toggle('loading', flag);
+    this.buttons.forEach((button) => { button.disabled = flag; });
+  },
+  applyState: function (state, label) {
+    if (!this.container) return;
+    this.currentState = state;
+    if (this.statusChip) {
+      const readable = label || this.labels[state] || state;
+      this.statusChip.textContent = readable;
+      this.statusChip.setAttribute('data-state', state);
+    }
+    this.buttons.forEach((button) => {
+      const isActive = button.getAttribute('data-onair-set') === state;
+      button.classList.toggle('is-active', isActive);
+    });
+  },
+  refresh: async function () {
+    if (!this.container) return;
+    try {
+      const response = await requestGet('/onair');
+      const data = JSON.parse(response);
+      if (data.state) {
+        this.applyState(data.state, data.label);
+      }
+    } catch (error) {
+      console.error('Failed to fetch On Air state:', error);
+    }
+  },
+  setState: async function (state) {
+    if (!this.container) return;
+    this.setLoading(true);
+    try {
+      const response = await requestPost('/onair', { state });
+      const data = JSON.parse(response);
+      if (data.state) {
+        this.applyState(data.state, data.label);
+      }
+    } catch (error) {
+      alert('Failed to update On Air state: ' + error.message);
+    } finally {
+      this.setLoading(false);
+    }
+  }
+};
+
 function stringToId(str) {
   let hash = 0, i, chr;
   if (str.length === 0) return hash.toString();
@@ -1114,6 +1192,7 @@ $(".file-content").addEventListener("keyup", function (e) {
 });
 
 (async function () {
+  OnAirSign.init();
   await fetchSystemInfo();
   await fetchFiles("LittleFS", "/");
 })();

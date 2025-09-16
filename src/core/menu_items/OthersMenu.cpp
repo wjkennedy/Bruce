@@ -6,6 +6,7 @@
 #include "modules/others/clicker.h"
 #include "modules/others/ibutton.h"
 #include "modules/others/mic.h"
+#include "modules/others/on_air.h"
 #include "modules/others/openhaystack.h"
 #include "modules/others/qrcode_menu.h"
 #include "modules/others/timer.h"
@@ -13,6 +14,7 @@
 
 void OthersMenu::optionsMenu() {
     options = {
+        {"On Air Sign",   showOnAirSign                           },
         {"QRCodes",      qrcode_menu                              },
         {"Megalodon",    shark_setup                              },
 #ifdef MIC_SPM1423
