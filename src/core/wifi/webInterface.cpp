@@ -8,6 +8,7 @@
 #include "core/utils.h"
 #include "core/wifi/wifi_common.h" // using common wifisetup
 #include "esp_task_wdt.h"
+#include "modules/others/on_air.h"
 #include "webFiles.h"
 #include <globals.h>
 
@@ -392,6 +393,43 @@ void configureWebServer() {
             humanReadableSize(LittleFSTotalBytes).c_str()
         );
         request->send(200, "application/json", response_body);
+    });
+
+    server->on("/onair", HTTP_GET, [](AsyncWebServerRequest *request) {
+        if (!checkUserWebAuth(request)) {
+            request->requestAuthentication();
+            return;
+        }
+
+        OnAirState state = getOnAirState();
+        String response =
+            "{\"state\":\"" + String(onAirStateToString(state)) + "\",\"label\":\"" +
+            onAirStateDisplayLabel(state) + "\"}";
+        request->send(200, "application/json", response);
+    });
+
+    server->on("/onair", HTTP_POST, [](AsyncWebServerRequest *request) {
+        if (!checkUserWebAuth(request)) {
+            request->requestAuthentication();
+            return;
+        }
+
+        if (!request->hasParam("state", true)) {
+            request->send(400, "application/json", "{\"error\":\"missing state\"}");
+            return;
+        }
+
+        AsyncWebParameter *param = request->getParam("state", true);
+        if (!setOnAirState(param->value())) {
+            request->send(400, "application/json", "{\"error\":\"invalid state\"}");
+            return;
+        }
+
+        OnAirState state = getOnAirState();
+        String response =
+            "{\"state\":\"" + String(onAirStateToString(state)) + "\",\"label\":\"" +
+            onAirStateDisplayLabel(state) + "\"}";
+        request->send(200, "application/json", response);
     });
 
     server->on("/getscreen", HTTP_GET, [](AsyncWebServerRequest *request) {

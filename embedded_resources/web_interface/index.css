@@ -107,6 +107,103 @@ svg > g, svg > path {
     justify-content: space-between;
     display: flex;
 }
+.container .on-air-card {
+    border-bottom: 1px solid var(--color);
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.on-air-card .on-air-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.on-air-card .card-title {
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+.on-air-card .status-chip {
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.on-air-card .status-chip[data-state="live"] {
+    background-color: #b91c1c;
+    border-color: #b91c1c;
+    color: #ffffff;
+}
+.on-air-card .status-chip[data-state="standby"] {
+    background-color: #f59e0b;
+    border-color: #f59e0b;
+    color: #1f2937;
+}
+.on-air-card .status-chip[data-state="off"] {
+    background-color: transparent;
+    border-color: var(--color);
+    color: var(--color);
+}
+.on-air-card .on-air-description {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.85;
+}
+.on-air-card .on-air-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.on-air-card .on-air-btn {
+    flex: 1 1 100px;
+    transition: background-color .2s ease, color .2s ease;
+}
+.on-air-card .on-air-btn[data-onair-set="live"] {
+    border-color: #b91c1c;
+    color: #f87171;
+}
+.on-air-card .on-air-btn[data-onair-set="standby"] {
+    border-color: #f59e0b;
+    color: #fbbf24;
+}
+.on-air-card .on-air-btn[data-onair-set="off"] {
+    border-color: var(--color);
+    color: var(--color);
+}
+.on-air-card .on-air-btn:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+.on-air-card .on-air-btn[data-onair-set="live"]:hover:not(:disabled) {
+    background-color: rgba(185, 28, 28, 0.2);
+    color: #fca5a5;
+}
+.on-air-card .on-air-btn[data-onair-set="standby"]:hover:not(:disabled) {
+    background-color: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+.on-air-card .on-air-btn.is-active[data-onair-set="live"] {
+    background-color: #b91c1c;
+    color: #ffffff;
+}
+.on-air-card .on-air-btn.is-active[data-onair-set="standby"] {
+    background-color: #f59e0b;
+    color: #1f2937;
+}
+.on-air-card .on-air-btn.is-active[data-onair-set="off"] {
+    background-color: var(--color);
+    color: var(--background);
+}
+.on-air-card.loading {
+    opacity: 0.7;
+}
+.on-air-card.loading .on-air-btn {
+    pointer-events: none;
+}
 .container .free-space .block-space {
     width: 50%;
     border: 0px;
