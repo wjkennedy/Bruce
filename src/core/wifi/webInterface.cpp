@@ -420,6 +420,7 @@ void configureWebServer() {
         }
 
         const AsyncWebParameter *param = request->getParam("state", true);
+
         if (!setOnAirState(param->value())) {
             request->send(400, "application/json", "{\"error\":\"invalid state\"}");
             return;
