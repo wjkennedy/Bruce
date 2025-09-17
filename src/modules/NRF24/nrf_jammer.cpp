@@ -244,12 +244,9 @@ void nrf_channel_hopper() {
             tft.setCursor(10, 150);
             tft.print("Exit");
 
-            int yHighlight;
-            if (menuIndex == 0) yHighlight = 70;
-            if (menuIndex == 1) yHighlight = 90;
-            if (menuIndex == 2) yHighlight = 110;
-            if (menuIndex == 3) yHighlight = 130;
-            if (menuIndex == 4) yHighlight = 150;
+            const int baseY = 70;
+            const int itemSpacing = 20;
+            int yHighlight = baseY + (menuIndex * itemSpacing);
 
             tft.drawRect(5, yHighlight - 2, tftWidth - 10, 18, bruceConfig.priColor);
             redraw = false;
